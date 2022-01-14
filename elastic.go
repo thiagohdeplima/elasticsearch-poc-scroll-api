@@ -31,13 +31,15 @@ func SaveInElastic(person Person) error {
 		Refresh:    "true",
 	}
 
+	log.Printf("sending person %s", string(bytes))
+
 	res, err := req.Do(context.Background(), es)
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)
 	}
 
 	if res.IsError() {
-		log.Printf("[%s] Error indexing document ID=%s", res.Status(), person.IDNumber)
+		log.Printf("[%s|%+v] Error indexing document ID=%s", res.Status(), res, person.IDNumber)
 	}
 
 	return nil
