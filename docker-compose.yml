@@ -18,6 +18,23 @@ services:
       start_period: 30s
     ports:
     - 9200:9200
+    volumes:
+    - ./data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:7.16.2
+    networks:
+    - app
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    ports:
+    - 5601:5601
 
   generator:
     build: .
@@ -28,4 +45,5 @@ services:
     restart: on-failure
     depends_on:
     - elastic
+    scale: 3
 
